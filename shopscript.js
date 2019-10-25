@@ -1,59 +1,70 @@
 var button = document.getElementById("enter");
 var input = document.getElementById("userinput");
 var ul = document.querySelector("ul");
-var deleteBtns =document.getElementById("delete");
-var items = ul.getElementsByTagName("li");
 
 
-
-//add event listener to first 6 btns in HTML file
-for(var i = 0; i < deleteBtns.length; i++){
-	deleteBtns[i].addEventListener("click", removeParent, false);
-}
 function inputLength() {
 	return input.value.length;
 }
 
-//from StackOverflow:
-function removeParent(evt) {
-  evt.target.removeEventListener("click", removeParent, false);
-  evt.target.parentNode.remove();
-}
-
-//click on a list item and it strikethroughs the text
-function getEventTarget(e){
-	e = e || window.event;
-	return e.target || e.srcElement;
-}
-
-
-ul.onclick = function(event){
-	var target = getEventTarget(event);
-	target.classList.toggle("done");
-}
-
-
-function createListElement() {
+function createListElement () {
 	var li = document.createElement("li");
 	li.appendChild(document.createTextNode(input.value));
 	ul.appendChild(li);
+
+	li.addEventListener("click", function() {
+		// creates a boolean that toggles the done class on li:
+		// if the list item is clicked this toggles the done class
+		var finished = this.classList.toggle("done");
+		// creates a remove button for the finished item:
+		var removeButton = document.createElement("button");
+		removeButton.classList.add("deleteButton");
+
+		// if the list item is clicked (li add event listener ) then 
+		// finished is true
+		if (finished) {
+			removeButton.appendChild(document.createTextNode("remove"));
+			removeButton.classList = "deleteButton";
+			li.appendChild(removeButton);
+
+			removeButton.addEventListener("click", function() {
+				this.parentElement.remove();
+			});
+		} else {
+			this.getElementsByClassName("deleteButton")[0].remove();
+		}
+	})
+	// revert input value back to nothing
 	input.value = "";
 }
 
 function addListAfterClick() {
-	if (inputLength() > 0) {
+	if (inputLength() > 0 ) {
 		createListElement();
-	}
+		}
 }
 
-function addListAfterKeypress(event) {
+function addListAfterPress(event) {
 	if (inputLength() > 0 && event.keyCode === 13) {
 		createListElement();
 	}
 }
 
+// function listStrikethrough(event) {
+// 	var listItem = document.querySelector("li");
+// 	listItem.classList.toggle("done");
+// }
 
-button.addEventListener("click", addListAfterClick);
+// function deleteListItem(event) {
+// 	var itemToDelete = document.getElementById("list");
+// 	var myRemovedLink = myLinkList.lastChild;
+// 	myLinkList.removeChild(myRemovedLink);
+// }
 
-input.addEventListener("keypress", addListAfterKeypress);
- 
+// li.addEventListener("click", listStrikethrough)
+
+// deleteButton.addEventListener("click", deleteListItem)
+
+button.addEventListener("click", addListAfterClick )
+
+input.addEventListener("keypress", addListAfterPress)
